@@ -1,5 +1,6 @@
 package com.michael.hiplaces
 
+import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,12 @@ import android.widget.EditText
 import android.widget.Toast
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
+import java.io.BufferedReader
+import java.io.InputStream
+import java.io.InputStreamReader
+import java.io.OutputStreamWriter
+import java.net.HttpURLConnection
+import java.net.URL
 
 
 class SignInActivity : AppCompatActivity() {
@@ -25,6 +32,7 @@ class SignInActivity : AppCompatActivity() {
         init()
     }
 
+    /* init the edit text fields */
     private fun init() {
         name = findViewById(R.id.fieldName)
         email = findViewById(R.id.fieldEmail)
@@ -32,6 +40,7 @@ class SignInActivity : AppCompatActivity() {
         repeatPassword = findViewById(R.id.fieldRegRePassword)
     }
 
+    /* button callback */
     fun onClick(v: View) {
         val sName = name.text.toString()
         val sEmail = email.text.toString()
@@ -61,15 +70,50 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 
+    /*
+    * pack name and password into json for sending it to the server
+    **/
+    fun processData(): String {
+        val signInBoxedData = SignInBoxedData(
+            name.text.toString(),
+            email.text.toString(),
+            password.text.toString(),
+            repeatPassword.text.toString()
+        )
+        val json = Json(JsonConfiguration.Stable)
+        return json.stringify(SignInBoxedData.serializer(), signInBoxedData)
+
+    }
+
+    /*
+    * send data to the server
+    **/
     private fun sentRequest() {
         Log.d(LOG_TAG, "fun sentRequest");
-        val signInBoxedData = SignInBoxedData(
-                            name.text.toString(),
-                            email.text.toString(),
-                            password.text.toString(),
-                            repeatPassword.text.toString())
-        val json = Json(JsonConfiguration.Stable)
-        val jsonSignInBoxedData = json.stringify(SignInBoxedData.serializer(), signInBoxedData)
+        val jsonSignInBoxedData = processData()
+        sendHttp(jsonSignInBoxedData)
         Log.d(LOG_TAG, "jsonBox: ${jsonSignInBoxedData}")
     }
+
+    fun sendHttp(jsonSignInBoxedData: String) {
+        Log.d(LOG_TAG, "sendHttp")
+        val url = URL("http://37.195.44.14/")
+        with(url.openConnection() as HttpURLConnection) {
+            requestMethod = "POST"
+            val wr = OutputStreamWriter(outputStream)
+            wr.write(jsonSignInBoxedData)
+            wr.flush()
+            Log.d(LOG_TAG, "url:=$url outstream:=$wr")
+            BufferedReader(InputStreamReader(inputStream)).use {
+                val response = StringBuffer()
+                var inputLine = it.readLine()
+                while (inputLine != null) {
+                    response.append(inputLine)
+                    inputLine = it.readLine()
+                }
+                Log.d(LOG_TAG, "Response: $response")
+            }
+        }
+    }
 }
+

@@ -9,7 +9,12 @@ import android.widget.Toast
 
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.io.OutputStreamWriter
 import java.lang.Exception
+import java.net.HttpURLConnection
+import java.net.URL
 
 class SignUpActivity : AppCompatActivity() {
     val LOG_TAG = "TEST_LOG SignUpActivity"
@@ -45,13 +50,44 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
+    fun processData(): String {
+        val signUpBoxedData = SignUpBoxedData(
+            emailField.text.toString(),
+            passwordField.text.toString())
+        val json = Json(JsonConfiguration.Stable)
+        return json.stringify(SignUpBoxedData.serializer(), signUpBoxedData)
+
+    }
+
+    /*
+    * send data to the server
+    **/
     private fun sentRequest() {
         Log.d(LOG_TAG, "fun sentRequest");
-        val signUpBoxedData = SignUpBoxedData(
-                            emailField.text.toString(),
-                            passwordField.text.toString())
-        val json = Json(JsonConfiguration.Stable)
-        val jsonSignUpBoxedData = json.stringify(SignUpBoxedData.serializer(), signUpBoxedData)
+        val jsonSignUpBoxedData = processData()
+        sendHttp(jsonSignUpBoxedData)
         Log.d(LOG_TAG, "jsonBox: ${jsonSignUpBoxedData}")
+    }
+
+    fun sendHttp(jsonSignUpBoxedData: String) {
+        Log.d(LOG_TAG, "sendHttp")
+        val url = URL("http://37.195.44.14/")
+        with(url.openConnection() as HttpURLConnection) {
+            requestMethod = "POST"
+            val wr = OutputStreamWriter(outputStream)
+            wr.write(jsonSignUpBoxedData)
+            wr.flush()
+            Log.d(LOG_TAG, "url:=$url outstream:=$wr")
+            BufferedReader(InputStreamReader(inputStream)).use {
+                val response = StringBuffer()
+                var inputLine = it.readLine()
+                while (inputLine != null) {
+                    response.append(inputLine)
+                    inputLine = it.readLine()
+                }
+                Log.d(LOG_TAG, "Response: $response")
+            }
+        }
+
     }
 }
