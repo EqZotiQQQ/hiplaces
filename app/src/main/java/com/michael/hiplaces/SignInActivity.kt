@@ -20,6 +20,8 @@ class SignInActivity : AppCompatActivity() {
     val LOG_TAG = "TEST_LOG SignUpActivity"
     lateinit var emailField: EditText
     lateinit var passwordField: EditText
+    var emailValue: String = ""
+    var passwordValue: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +44,9 @@ class SignInActivity : AppCompatActivity() {
                     Toast.makeText(this, "Field is empty!", Toast.LENGTH_SHORT).show()
                     return
                 }
-             //   sentRequest()
+                val packedSignInData = boxTheData()
+                Log.d(LOG_TAG, "json: $packedSignInData")
+                val sender = Sender(packedSignInData)
             }
             R.id.button_sign_in_cancel -> {
                 finish()
@@ -50,14 +54,13 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 
-   /* fun processData(): String {
-        val signUpBoxedData = SignUpBoxedData(
+    fun boxTheData(): String {
+        val signInBoxedData = SignInBoxedData(
             emailField.text.toString(),
             passwordField.text.toString())
         val json = Json(JsonConfiguration.Stable)
-        return json.stringify(SignUpBoxedData.serializer(), signUpBoxedData)
-
-    }*/
+        return json.stringify(SignInBoxedData.serializer(), signInBoxedData)
+    }
 
     /*
     * send data to the server

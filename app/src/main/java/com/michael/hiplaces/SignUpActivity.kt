@@ -61,14 +61,27 @@ class SignUpActivity : AppCompatActivity() {
                     Toast.makeText(this, "Passwords do not match!", Toast.LENGTH_SHORT).show()
                     return
                 }
-
-                //sentRequest()
+                val packedSignUpData = boxTheData()
+                Log.d(LOG_TAG, "json: $packedSignUpData")
+                val sender = Sender(packedSignUpData)
             }
             R.id.button_sign_up_cancel -> {
                 finish()
             }
         }
     }
+
+    fun boxTheData(): String {
+        val signUpBoxedData = SignUpBoxedData(
+            name.text.toString(),
+            email.text.toString(),
+            password.text.toString(),
+            repeatPassword.text.toString()
+        )
+        val json = Json(JsonConfiguration.Stable)
+        return json.stringify(SignUpBoxedData.serializer(), signUpBoxedData)
+    }
+
 
     /*
     * pack name and password into json for sending it to the server
