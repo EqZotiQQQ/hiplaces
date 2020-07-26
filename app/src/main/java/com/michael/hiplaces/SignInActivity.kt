@@ -9,19 +9,11 @@ import android.widget.Toast
 
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.io.OutputStreamWriter
-import java.lang.Exception
-import java.net.HttpURLConnection
-import java.net.URL
 
 class SignInActivity : AppCompatActivity() {
     val LOG_TAG = "TEST_LOG SignUpActivity"
     lateinit var emailField: EditText
     lateinit var passwordField: EditText
-    var emailValue: String = ""
-    var passwordValue: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +38,8 @@ class SignInActivity : AppCompatActivity() {
                 }
                 val packedSignInData = boxTheData()
                 Log.d(LOG_TAG, "json: $packedSignInData")
-                val sender = Sender(packedSignInData)
+                val sender = Sender(packedSignInData, "signin")
+                sender.send()
             }
             R.id.button_sign_in_cancel -> {
                 finish()
@@ -61,37 +54,5 @@ class SignInActivity : AppCompatActivity() {
         val json = Json(JsonConfiguration.Stable)
         return json.stringify(SignInBoxedData.serializer(), signInBoxedData)
     }
-
-    /*
-    * send data to the server
-    **/
-  /*  private fun sentRequest() {
-        Log.d(LOG_TAG, "fun sentRequest");
-        val jsonSignUpBoxedData = processData()
-        sendHttp(jsonSignUpBoxedData)
-        Log.d(LOG_TAG, "jsonBox: ${jsonSignUpBoxedData}")
-    }
-
-    fun sendHttp(jsonSignUpBoxedData: String) {
-        Log.d(LOG_TAG, "sendHttp")
-        val url = URL("http://37.195.44.14/")
-        with(url.openConnection() as HttpURLConnection) {
-            requestMethod = "POST"
-            val wr = OutputStreamWriter(outputStream)
-            wr.write(jsonSignUpBoxedData)
-            wr.flush()
-            Log.d(LOG_TAG, "url:=$url outstream:=$wr")
-            BufferedReader(InputStreamReader(inputStream)).use {
-                val response = StringBuffer()
-                var inputLine = it.readLine()
-                while (inputLine != null) {
-                    response.append(inputLine)
-                    inputLine = it.readLine()
-                }
-                Log.d(LOG_TAG, "Response: $response")
-            }
-        }
-
-    }*/
 }
 
