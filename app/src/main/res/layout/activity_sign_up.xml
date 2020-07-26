@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SignUpActivity">
+    tools:context=".SignInActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,17 +14,26 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Log in"
             android:gravity="center"
+            android:text="Registration"
             android:textSize="50sp"> </TextView>
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email or Name"
+            android:hint="Name"
+            android:inputType="text"
+            android:maxLines="1"
+            android:id="@+id/edit_text_sign_up_name"
+            android:scrollHorizontally="true"> </EditText>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
             android:inputType="textEmailAddress"
             android:maxLines="1"
-            android:id="@+id/fieldLogInName"
+            android:id="@+id/edit_text_sign_up_email"
             android:scrollHorizontally="true"> </EditText>
 
         <EditText
@@ -33,7 +42,17 @@
             android:hint="Password"
             android:inputType="text"
             android:maxLines="1"
-            android:id="@+id/fieldLogInPassword"
+            android:id="@+id/edit_text_sign_up_password"
+            android:password="true"
+            android:scrollHorizontally="true"> </EditText>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:inputType="text"
+            android:maxLines="1"
+            android:id="@+id/edit_text_sign_up_password_repeat"
             android:password="true"
             android:scrollHorizontally="true"> </EditText>
 
@@ -41,23 +60,28 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
+
             <Button
                 android:layout_width="match_parent"
                 android:text="Apply"
+                android:id="@+id/button_sign_up_apply"
                 android:layout_weight="2"
                 android:onClick="onClick"
-                android:id="@+id/btnLogInApply"
                 android:layout_height="wrap_content"> </Button>
+
             <Button
                 android:layout_width="match_parent"
                 android:text="Cancel"
+                android:id="@+id/button_sign_up_cancel"
                 android:layout_weight="2"
                 android:onClick="onClick"
-                android:id="@+id/btnLogInCancel"
                 android:layout_height="wrap_content"> </Button>
 
         </LinearLayout>
-
     </LinearLayout>
 
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+

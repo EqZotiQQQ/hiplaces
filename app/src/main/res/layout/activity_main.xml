@@ -14,7 +14,7 @@
 
         <!-- login button #474A51-->
         <Button
-            android:id="@+id/btnSignIn"
+            android:id="@+id/button_main_to_sign_in_activity"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="20sp"
@@ -28,7 +28,7 @@
 
         <!-- reg in button -->
         <Button
-            android:id="@+id/btnSignUp"
+            android:id="@+id/button_main_to_sign_up_activity"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="20sp"

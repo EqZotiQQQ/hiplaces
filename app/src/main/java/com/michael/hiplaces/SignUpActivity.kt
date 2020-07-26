@@ -1,25 +1,30 @@
 package com.michael.hiplaces
 
+import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
-
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 import java.io.BufferedReader
+import java.io.InputStream
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
-import java.lang.Exception
 import java.net.HttpURLConnection
 import java.net.URL
 
+
 class SignUpActivity : AppCompatActivity() {
-    val LOG_TAG = "TEST_LOG SignUpActivity"
-    lateinit var emailField: EditText
-    lateinit var passwordField: EditText
+
+    val LOG_TAG = "TEST_LOG SignInActivity"
+
+    lateinit var name: EditText
+    lateinit var email: EditText
+    lateinit var password: EditText
+    lateinit var repeatPassword: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,55 +32,76 @@ class SignUpActivity : AppCompatActivity() {
         init()
     }
 
+    /* init the edit text fields */
     private fun init() {
-        emailField = findViewById(R.id.fieldLogInName)
-        passwordField = findViewById(R.id.fieldLogInPassword)
+        name = findViewById(R.id.edit_text_sign_up_name)
+        email = findViewById(R.id.edit_text_sign_up_email)
+        password = findViewById(R.id.edit_text_sign_up_password)
+        repeatPassword = findViewById(R.id.edit_text_sign_up_password_repeat)
     }
 
+    /* button callback */
     fun onClick(v: View) {
-        Log.d(LOG_TAG, "fun onClick(${v.id})");
-        val emailValue = emailField.text.toString()
-        val passwordValue = passwordField.text.toString()
-        when(v.id) {
-            R.id.btnLogInApply -> {
-                if(emailValue.isEmpty() || passwordValue.isEmpty()) {
+        val sName = name.text.toString()
+        val sEmail = email.text.toString()
+        val sPassword = password.text.toString()
+        val sRepeatPassword = repeatPassword.text.toString()
+        when (v.id) {
+            R.id.button_sign_up_apply -> {
+                if (sName.isEmpty() ||
+                    sEmail.isEmpty() ||
+                    sPassword.isEmpty() ||
+                    sRepeatPassword.isEmpty()
+                ) {
                     Toast.makeText(this, "Field is empty!", Toast.LENGTH_SHORT).show()
                     return
                 }
-                sentRequest()
+
+                if (sPassword != sRepeatPassword) {
+                    Toast.makeText(this, "Passwords do not match!", Toast.LENGTH_SHORT).show()
+                    return
+                }
+
+                //sentRequest()
             }
-            R.id.btnLogInCancel -> {
+            R.id.button_sign_up_cancel -> {
                 finish()
             }
         }
     }
 
-    fun processData(): String {
-        val signUpBoxedData = SignUpBoxedData(
-            emailField.text.toString(),
-            passwordField.text.toString())
+    /*
+    * pack name and password into json for sending it to the server
+    **/
+   /* fun processData(): String {
+        val signInBoxedData = SignInBoxedData(
+            name.text.toString(),
+            email.text.toString(),
+            password.text.toString(),
+            repeatPassword.text.toString()
+        )
         val json = Json(JsonConfiguration.Stable)
-        return json.stringify(SignUpBoxedData.serializer(), signUpBoxedData)
+        return json.stringify(SignInBoxedData.serializer(), signInBoxedData)
 
-    }
+    }*/
 
     /*
     * send data to the server
     **/
-    private fun sentRequest() {
+   /* private fun sentRequest() {
         Log.d(LOG_TAG, "fun sentRequest");
-        val jsonSignUpBoxedData = processData()
-        sendHttp(jsonSignUpBoxedData)
-        Log.d(LOG_TAG, "jsonBox: ${jsonSignUpBoxedData}")
+        val jsonSignInBoxedData = processData()
+        sendHttp(jsonSignInBoxedData)
+        Log.d(LOG_TAG, "jsonBox: ${jsonSignInBoxedData}")
     }
 
-    fun sendHttp(jsonSignUpBoxedData: String) {
+    fun sendHttp(jsonSignInBoxedData: String) {
         Log.d(LOG_TAG, "sendHttp")
         val url = URL("http://37.195.44.14/")
         with(url.openConnection() as HttpURLConnection) {
             requestMethod = "POST"
             val wr = OutputStreamWriter(outputStream)
-            wr.write(jsonSignUpBoxedData)
+            wr.write(jsonSignInBoxedData)
             wr.flush()
             Log.d(LOG_TAG, "url:=$url outstream:=$wr")
             BufferedReader(InputStreamReader(inputStream)).use {
@@ -88,6 +114,7 @@ class SignUpActivity : AppCompatActivity() {
                 Log.d(LOG_TAG, "Response: $response")
             }
         }
-
-    }
+    }*/
 }
+
+
